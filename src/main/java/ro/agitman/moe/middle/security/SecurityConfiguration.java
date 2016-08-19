@@ -42,9 +42,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/list").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
-                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ADMIN')")
-                .antMatchers("/edit-user-*").access("hasRole('ADMIN') or hasRole('DBA')")
+                .antMatchers("/home").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+//                .antMatchers("/", "/list").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+//                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ADMIN')")
+//                .antMatchers("/edit-user-*").access("hasRole('ADMIN') or hasRole('DBA')")
+
+                .antMatchers("/admin*").access("hasRole('ADMIN')")
+
+                .antMatchers("/stud*").access("hasRole('STUDENT')")
+
+                .antMatchers("/exam*").access("hasRole('PROFESSOR')")
+                .antMatchers("/group*").access("hasRole('PROFESSOR')")
+                .antMatchers("/instance*").access("hasRole('PROFESSOR')")
+                .antMatchers("/stats*").access("hasRole('PROFESSOR')")
+
                 .and().formLogin()
                 .loginPage("/login").loginProcessingUrl("/login")
                 .usernameParameter("ssoId")
