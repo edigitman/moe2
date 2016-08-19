@@ -11,7 +11,7 @@ public enum UserProfileType implements Serializable {
     DBA("DBA"),
     ADMIN("ADMIN");
 
-    String userProfileType;
+    private String userProfileType;
 
     private UserProfileType(String userProfileType) {
         this.userProfileType = userProfileType;

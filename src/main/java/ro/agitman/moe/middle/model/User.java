@@ -13,10 +13,11 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "APP_USER")
+@SequenceGenerator(name = "APP_USER_SEQ", initialValue = 1000)
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "APP_USER_SEQ")
     private Integer id;
 
     @NotEmpty

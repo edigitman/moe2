@@ -10,10 +10,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- * Created by d-uu31cq on 19.08.2016.
- */
- 
 @Entity
 @Table(name="PERSISTENT_LOGINS")
 public class PersistentLogin implements Serializable{

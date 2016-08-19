@@ -9,10 +9,11 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "USER_PROFILE")
+@SequenceGenerator(name = "USER_PROFILE_SEQ", initialValue = 1000)
 public class UserProfile implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_PROFILE_SEQ")
     private Integer id;
 
     @Column(name = "TYPE", length = 15, unique = true, nullable = false)
