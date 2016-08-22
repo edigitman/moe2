@@ -20,11 +20,9 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "APP_USER_SEQ")
     private Integer id;
 
-    @NotEmpty
     @Column(name = "SSO_ID", unique = true, nullable = false)
     private String ssoId;
 
-    @NotEmpty
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 

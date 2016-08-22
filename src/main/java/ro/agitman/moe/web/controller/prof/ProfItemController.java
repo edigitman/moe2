@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ro.agitman.moe.web.controller.AbstractController;
 
 @Controller
-@RequestMapping("/stats")
-public class ProfStatsController extends AbstractController {
+@RequestMapping("/item")
+public class ProfItemController extends AbstractController {
 }

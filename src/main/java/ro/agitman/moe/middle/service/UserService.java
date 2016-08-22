@@ -21,4 +21,5 @@ public interface UserService {
 
     boolean isUserSSOUnique(Integer id, String sso);
 
+    List<User> findAllUsersWithRoles();
 }

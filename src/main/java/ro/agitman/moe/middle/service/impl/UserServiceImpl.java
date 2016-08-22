@@ -2,6 +2,7 @@ package ro.agitman.moe.middle.service.impl;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,9 +43,8 @@ public class UserServiceImpl implements UserService {
      */
     public void updateUser(User user) {
         User entity = dao.findById(user.getId());
-        if(entity!=null){
-            entity.setSsoId(user.getSsoId());
-            if(!user.getPassword().equals(entity.getPassword())){
+        if (entity != null) {
+            if (user.getPassword() != null && !user.getPassword().equals(entity.getPassword())) {
                 entity.setPassword(passwordEncoder.encode(user.getPassword()));
             }
             entity.setFirstName(user.getFirstName());
@@ -63,9 +63,15 @@ public class UserServiceImpl implements UserService {
         return dao.findAllUsers();
     }
 
+    public List<User> findAllUsersWithRoles() {
+        List<User> users = dao.findAllUsers();
+        users.forEach(u -> Hibernate.initialize(u.getUserProfiles()));
+        return users;
+    }
+
     public boolean isUserSSOUnique(Integer id, String sso) {
         User user = findBySSO(sso);
-        return ( user == null || ((id != null) && (user.getId() == id)));
+        return (user == null || ((id != null) && (user.getId() == id)));
     }
 
 }

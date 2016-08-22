@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/home").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+                .antMatchers("/home").access("hasRole('PROFESSOR') or hasRole('ADMIN') or hasRole('STUDENT')")
 //                .antMatchers("/", "/list").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
 //                .antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ADMIN')")
 //                .antMatchers("/edit-user-*").access("hasRole('ADMIN') or hasRole('DBA')")
@@ -55,6 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/group*").access("hasRole('PROFESSOR')")
                 .antMatchers("/instance*").access("hasRole('PROFESSOR')")
                 .antMatchers("/stats*").access("hasRole('PROFESSOR')")
+                .antMatchers("/item*").access("hasRole('PROFESSOR')")
+                .antMatchers("/review*").access("hasRole('PROFESSOR')")
 
                 .and().formLogin()
                 .loginPage("/login").loginProcessingUrl("/login")
