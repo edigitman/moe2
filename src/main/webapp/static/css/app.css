@@ -5,3 +5,7 @@
 .textAlignCenter{
     text-align: center;
 }
+
+.clickableRow {
+    cursor: pointer;
+}

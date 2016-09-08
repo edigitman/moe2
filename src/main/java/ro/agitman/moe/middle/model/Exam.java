@@ -1,8 +1,7 @@
 package ro.agitman.moe.middle.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -14,10 +13,10 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EXAM_SEQ")
     private Integer id;
 
-    @NotEmpty
+    @NotNull
     private String name;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User owner;

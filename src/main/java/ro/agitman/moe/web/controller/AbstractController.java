@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
+import ro.agitman.moe.middle.model.User;
+import ro.agitman.moe.middle.service.UserService;
 
 /**
  * Created by edi on 8/19/16.
@@ -28,20 +28,33 @@ public class AbstractController {
         return userName;
     }
 
+    protected User getCurrentUser(UserService userService) {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+
+        return userService.findBySSO(userName);
+    }
+
     /**
      * This method returns true if users is already authenticated [logged-in], else false.
      */
     protected boolean isCurrentAuthenticationAnonymous(AuthenticationTrustResolver authenticationTrustResolver) {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authenticationTrustResolver.isAnonymous(authentication);
     }
 
     protected boolean isCurrentAuthenticationAdmin(AuthenticationTrustResolver authenticationTrustResolver) {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.isAuthenticated()){
-            for(GrantedAuthority ga : authentication.getAuthorities()){
-                if("ROLE_ADMIN".equals(ga.getAuthority()))
+        if (authentication.isAuthenticated()) {
+            for (GrantedAuthority ga : authentication.getAuthorities()) {
+                if ("ROLE_ADMIN".equals(ga.getAuthority()))
                     return true;
             }
         }
@@ -50,12 +63,28 @@ public class AbstractController {
     }
 
     protected boolean isCurrentAuthenticationProfessor(AuthenticationTrustResolver authenticationTrustResolver) {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authenticationTrustResolver.isAnonymous(authentication);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.isAuthenticated()) {
+            for (GrantedAuthority ga : authentication.getAuthorities()) {
+                if ("ROLE_PROFESSOR".equals(ga.getAuthority()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     protected boolean isCurrentAuthenticationStudent(AuthenticationTrustResolver authenticationTrustResolver) {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authenticationTrustResolver.isAnonymous(authentication);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.isAuthenticated()) {
+            for (GrantedAuthority ga : authentication.getAuthorities()) {
+                if ("ROLE_STUDENT".equals(ga.getAuthority()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

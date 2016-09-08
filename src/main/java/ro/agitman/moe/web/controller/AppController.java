@@ -6,13 +6,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import ro.agitman.moe.middle.model.Exam;
 import ro.agitman.moe.middle.model.User;
 import ro.agitman.moe.middle.model.UserProfile;
@@ -22,9 +22,7 @@ import ro.agitman.moe.middle.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 @Controller
 @RequestMapping("/")
@@ -68,7 +66,7 @@ public class AppController extends  AbstractController{
         }
 
         if(isCurrentAuthenticationProfessor(authenticationTrustResolver)){
-            List<Exam> exams = examService.findLatestFive();
+            List<Exam> exams = examService.findLatestFive(getCurrentUser(userService));
             model.addAttribute("exams", exams);
         }
 

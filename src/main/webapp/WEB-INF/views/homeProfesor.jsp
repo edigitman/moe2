@@ -8,7 +8,7 @@
     <c:choose>
         <c:when test="${empty exams}">
             <h4>Nu sunt concepte</h4> <br/>
-            <button class="btn btn-primary">Adaugati</button>
+            <a href="/exam" class="btn btn-primary">Adaugati</a>
         </c:when>
         <c:otherwise>
             <table class="table table-hover">
@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                 <c:forEach items="${exams}" var="exam">
-                    <tr>
+                    <tr class="clickableRow">
                         <td>${exam.name}</td>
                         <td>${exam.items}</td>
                         <td>${exam.points}</td>
