@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.agitman.moe.middle.dao.ExamDao;
+import ro.agitman.moe.middle.model.DifficultyEnum;
 import ro.agitman.moe.middle.model.Exam;
 import ro.agitman.moe.middle.model.User;
 import ro.agitman.moe.middle.service.ExamService;
+import ro.agitman.moe.web.dto.ExamEditDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -48,5 +50,25 @@ public class ExamServiceImpl implements ExamService {
         exam.setLocked(false);
 
         examDao.persist(exam);
+    }
+
+    @Override
+    public void changeName(ExamEditDTO data) {
+        Integer examId = data.getPk();
+        String newName = data.getValue();
+
+        Exam exam = examDao.getByKey(examId);
+        exam.setName(newName);
+        examDao.update(exam);
+    }
+
+    @Override
+    public void changeDifficulty(ExamEditDTO data) {
+        Integer examId = data.getPk();
+        String newDifficulty = data.getValue();
+
+        Exam exam = examDao.getByKey(examId);
+        exam.setDifficulty(DifficultyEnum.valueOf(newDifficulty));
+        examDao.update(exam);
     }
 }

@@ -16,5 +16,8 @@ public interface ExamDao {
 
     void persist(Exam entity);
 
+    void update(Exam entity);
+
     Exam getByKey(Integer key);
+
 }

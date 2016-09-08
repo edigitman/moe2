@@ -42,10 +42,8 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${exams}" var="exam">
-                        <tr class="examLine clickableRow" examId="${exam.id}">
-                            <td>
-                                <a href="/exam/edit-${exam.id}">${exam.name}</a>
-                            </td>
+                        <tr class="clickableRow">
+                            <td><a href="/exam/edit-${exam.id}">${exam.name}</a></td>
                             <td>${exam.items}</td>
                             <td>${exam.points}</td>
                             <td>${exam.difficulty}</td>
@@ -69,33 +67,7 @@
             </button>
         </div>
     </div>
-
 </div>
-
-<script type="text/javascript">
-
-    //    var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
-    //    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-    //    var csrfToken = $("meta[name='_csrf']").attr("content");
-
-    //    $(".examLine").click(function (evt) {
-    //
-    //        // using JQuery to send a non-x-www-form-urlencoded request
-    //        var headers = {};
-    //        headers[csrfHeader] = csrfToken;
-    //        $.ajax({
-    //            url: "/exam/edit-" + evt.currentTarget.attributes.examId.value,
-    //            type: "POST",
-    //            headers: headers
-    //    }).done(function( data, status ) {
-    //            if ( console && console.log ) {
-    //                console.log( "Status:", status );
-    //                console.log( "Data:", data );
-    //            }
-    //        });
-    //    });
-
-</script>
 
 <!-- Modal Add Exam -->
 <div class="modal fade" id="examModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
