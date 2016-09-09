@@ -59,4 +59,9 @@ public class ItemServiceImpl implements ItemService {
     public List<ExamItem> findByExam(Exam exam) {
         return itemDao.findByExam(exam);
     }
+
+    @Override
+    public ExamItem getByKey(Integer id) {
+        return itemDao.getByKey(id);
+    }
 }

@@ -14,4 +14,6 @@ public interface ItemService {
     void createItem(ExamItemDTO itemDTO);
 
     List<ExamItem> findByExam(Exam exam);
+
+    ExamItem getByKey(Integer id);
 }

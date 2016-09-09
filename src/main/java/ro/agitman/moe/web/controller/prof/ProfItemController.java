@@ -9,9 +9,13 @@ import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
 import ro.agitman.moe.web.dto.ExamItemDTO;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/item")
 public class ProfItemController extends AbstractController {
+
+    public static final String ITEM_ID = "examItemId";
 
     @Autowired
     private ItemService itemService;
@@ -19,9 +23,11 @@ public class ProfItemController extends AbstractController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public String saveItem(ExamItemDTO examItem) {
+    public String saveItem(ExamItemDTO examItem, HttpServletRequest request) {
 
         itemService.createItem(examItem);
+
+        request.getSession().setAttribute(ITEM_ID, examItem.getId());
 
         return "redirect:/exam/edit-" + examItem.getExamId();
     }

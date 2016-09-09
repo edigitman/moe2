@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ro.agitman.moe.middle.model.Exam;
+import ro.agitman.moe.middle.model.ExamItem;
 import ro.agitman.moe.middle.model.ItemTypeEnum;
 import ro.agitman.moe.middle.service.ExamService;
 import ro.agitman.moe.middle.service.ItemService;
 import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
 import ro.agitman.moe.web.dto.ExamEditDTO;
-import ro.agitman.moe.web.dto.ExamItemDTO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -49,16 +50,15 @@ public class ProfExamController extends AbstractController {
     }
 
     @RequestMapping(value = {"/edit-{examId}"}, method = RequestMethod.GET)
-    public String editExam(@PathVariable Integer examId, ModelMap model) {
+    public String editExam(@PathVariable Integer examId, HttpServletRequest request, ModelMap model) {
         model.addAttribute("loggedinuser", getPrincipal());
 
         Exam exam = examService.findById(examId, getCurrentUser(userService));
         model.addAttribute("exam", exam);
 
-        //todo add to the model the list of items from the exam
         model.addAttribute("items", itemService.findByExam(exam));
 
-        model.addAttribute("item", new ExamItemDTO());
+        model.addAttribute("item", getNewOrEdit(request));
         model.addAttribute("itemTypes", ItemTypeEnum.values());
 
         return "/prof/editItem";
@@ -75,5 +75,15 @@ public class ProfExamController extends AbstractController {
             examService.changeDifficulty(data);
         }
         return data.getValue();
+    }
+
+    private ExamItem getNewOrEdit(HttpServletRequest request) {
+        Object sessionItemId = request.getSession().getAttribute(ProfItemController.ITEM_ID);
+
+        if (sessionItemId != null && sessionItemId instanceof Integer) {
+            return itemService.getByKey((Integer) sessionItemId);
+        }
+
+        return new ExamItem();
     }
 }
