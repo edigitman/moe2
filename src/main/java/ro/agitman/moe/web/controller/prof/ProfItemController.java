@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ro.agitman.moe.middle.model.ExamItemAnswer;
+import ro.agitman.moe.middle.service.ItemAnswerService;
 import ro.agitman.moe.middle.service.ItemService;
 import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
@@ -27,7 +29,8 @@ public class ProfItemController extends AbstractController {
     private ItemService itemService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private ItemAnswerService answerService;
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -40,7 +43,7 @@ public class ProfItemController extends AbstractController {
         return "redirect:/exam/edit-" + examItem.getExamId();
     }
 
-    @RequestMapping(value="edit-{id}-{eid}", method = RequestMethod.GET)
+    @RequestMapping(value = "edit-{id}-{eid}", method = RequestMethod.GET)
     public String editItem(@PathVariable("id") Integer itemId, @PathVariable("eid") Integer examId, HttpServletRequest request) {
 
         request.getSession().setAttribute(ITEM_ID, itemId);
@@ -48,7 +51,7 @@ public class ProfItemController extends AbstractController {
         return "redirect:/exam/edit-" + examId;
     }
 
-    @RequestMapping(value="clean-{eid}", method = RequestMethod.GET)
+    @RequestMapping(value = "clean-{eid}", method = RequestMethod.GET)
     public String cleanItem(@PathVariable("eid") Integer examId, HttpServletRequest request) {
 
         request.getSession().removeAttribute(ITEM_ID);
@@ -56,7 +59,7 @@ public class ProfItemController extends AbstractController {
         return "redirect:/exam/edit-" + examId;
     }
 
-    @RequestMapping(value="remove-{id}-{eid}", method = RequestMethod.GET)
+    @RequestMapping(value = "remove-{id}-{eid}", method = RequestMethod.GET)
     public String removeItem(@PathVariable("id") Integer itemId, @PathVariable("eid") Integer examId, HttpServletRequest request) {
 
         itemService.remove(itemId);
@@ -69,19 +72,33 @@ public class ProfItemController extends AbstractController {
 // -----------------------------------------------------------------
 // ---------------- ANSWERS ACTIONS --------------------------------
 
-    @RequestMapping(value="as-{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "as-{id}", method = RequestMethod.GET)
     @ResponseBody
     public String getAnswers(@PathVariable("id") Integer itemId) {
         List<ItemAnswerDTO> result = new ArrayList<>();
 
-        ItemAnswerDTO i = new ItemAnswerDTO();
-        i.setCorrect(false);
-        i.setValue("test");
+        List<ExamItemAnswer> answers = answerService.getForItem(itemService.getByKey(itemId));
 
-        result.add(i);
+        answers.forEach(a ->
+                result.add(new ItemAnswerDTO(a))
+        );
 
-        Gson gson = new Gson();
-
-        return gson.toJson(result);
+        return new Gson().toJson(result);
     }
+
+    @RequestMapping(value = "as-{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveAnswer(@PathVariable("id") Integer itemId, ItemAnswerDTO answerDTO) {
+
+        answerService.persist(answerDTO, itemService.getByKey(itemId));
+
+        return new Gson().toJson(answerDTO);
+    }
+
+    @RequestMapping(value = "as-{id}", method = RequestMethod.DELETE)
+    public void removeAnswer(@PathVariable("id") Integer answerId) {
+
+        answerService.delete(answerId);
+    }
+
 }

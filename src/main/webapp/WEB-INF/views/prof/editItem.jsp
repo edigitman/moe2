@@ -180,27 +180,32 @@
             </div>
             <div class="modal-body">
 
-                <p>{{ message }}</p>
-
                 <div class="row" style="width: 99%; margin-left: 1px;">
                     <div class="form-group">
                         <label for="type">Raspuns</label>
                         <div>
                             <input id="answerValue" type="text" class="form-control"
+                                   v-bind:value="value"
                                    style="display: inline-block; width: 85%"/>
                             <span>
-                                <input id="answerCorrect" type="checkbox"> Corect
+                                <input id="answerCorrect"
+                                       v-bind:value="correct"
+                                       type="checkbox"> Corect
                             </span>
                         </div>
 
-                        <button class="btn btn-success">Adauga</button>
+                        <button @click="saveAnswer" class="btn btn-success">Adauga</button>
                     </div>
                 </div>
 
                 <div class="row">
                     <table id="answerTable" class="table table-hover">
                         <caption>lista de raspunsuri</caption>
-
+                        <tr v-for="answer in answers">
+                            <td>{{ answer.value }}</td>
+                            <td>{{ answer.correct }}</td>
+                            <td>delete</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -220,18 +225,44 @@
     new Vue({
         el: '#vueApp',
         data: {
+            value: {},
+            correct: {},
+
+            itemId: {},
+
             answers: []
         },
         methods: {
             loadAnswers: function (itemId) {
                 var self = this;
-                $.get('/item/as-'+itemId, function(data, status){
+                self.itemId = itemId;
+                $.get('/item/as-' + itemId, function (data, status) {
                     self.answers = data;
+                });
+            },
+
+            saveAnswer: function () {
+                var self = this;
+                $.post('/item/as-' + self.itemId, {value: self.value, correct: self.correct},
+                        function (data, status) {
+                            console.log('save answer: ' + status);
+                            answers.push(data);
+                            self.value = {};
+                            self.correct = {};
+                        });
+            },
+
+            deleteAnswer: function (answer) {
+                $.ajax({
+                    url: '/item/as-' + answer.id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        console.log(result);
+                    }
                 });
             }
         }
     });
-
 </script>
 
 
