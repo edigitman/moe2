@@ -9,3 +9,7 @@
 .clickableRow {
     cursor: pointer;
 }
+
+.isEdited-true{
+    background-color: #737373;
+}

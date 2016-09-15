@@ -26,9 +26,11 @@
           rel="stylesheet"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
+    <script src="https://vuejs.org/js/vue.js"></script>
+
     <sec:csrfMetaTags/>
 </head>
-<body>
+<body id="vueApp">
 <div class="generic-container">
     <%@include file="../authheader.jsp" %>
 
@@ -72,8 +74,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="assertion">Enunt</label>
-                                <textarea class="form-control" value="${item.assertion}" name="assertion"
-                                          id="assertion"></textarea>
+                                <textarea class="form-control" name="assertion" rows="5"
+                                          id="assertion">${item.assertion}</textarea>
                             </div>
                         </div>
                     </div><!-- END OF ROW -->
@@ -99,11 +101,22 @@
 
                 <div class="col-md-2" style="margin-top: 25px">
                     <div class="row">
-                        <button type="submit" class="btn btn-primary">Adauga</button>
+                        <button type="submit" class="btn btn-primary">Salveaza</button>
                     </div>
-                    <div class="row">
-                        <button type="reset" class="btn btn-link">Curata</button>
-                    </div>
+                    <c:if test="${not empty item.id}">
+                        <div class="row">
+                            <a href="/item/clean-${exam.id}" class="btn btn-link">Curata</a>
+                        </div>
+                        <div class="row" style="margin-top: 25px">
+                            <button type="button"
+                                    @click="loadAnswers(${item.id})"
+                                    class="btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#answerModal">
+                                Raspunsuri
+                            </button>
+                        </div>
+                    </c:if>
                 </div>
 
             </div>
@@ -121,18 +134,23 @@
                         <thead>
                         <tr>
                             <th style="width: 5%">#</th>
-                            <th style="width: 75%">Enunt</th>
+                            <th style="width: 70%">Enunt</th>
                             <th style="width: 10%">Pct.</th>
                             <th style="width: 10%">Tip</th>
+                            <th style="width: 5%">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:forEach items="${items}" var="item" varStatus="idx">
-                            <tr class="clickableRow">
+                            <tr class="clickableRow isEdited-${item.selected}">
                                 <td> ${idx.index + 1} </td>
-                                <td> ${item.title} </td>
+                                <td><a class="btn btn-link" href="/item/edit-${item.id}-${exam.id}">${item.title}</a>
+                                </td>
                                 <td> ${item.points} </td>
                                 <td> ${item.type} </td>
+                                <td><a href="/item/remove-${item.id}-${exam.id}">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -149,7 +167,75 @@
     </div>
 </div>
 
+<!-- Modal Add Exam -->
+<div class="modal fade" id="answerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Raspunsuri pentru subiect</h4>
+            </div>
+            <div class="modal-body">
+
+                <p>{{ message }}</p>
+
+                <div class="row" style="width: 99%; margin-left: 1px;">
+                    <div class="form-group">
+                        <label for="type">Raspuns</label>
+                        <div>
+                            <input id="answerValue" type="text" class="form-control"
+                                   style="display: inline-block; width: 85%"/>
+                            <span>
+                                <input id="answerCorrect" type="checkbox"> Corect
+                            </span>
+                        </div>
+
+                        <button class="btn btn-success">Adauga</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table id="answerTable" class="table table-hover">
+                        <caption>lista de raspunsuri</caption>
+
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Inchide</button>
+                <button type="submit" class="btn btn-primary">Salveaza</button>
+            </div>
+            <script src="/js/smooth-scroll.min.js"></script>
+
+        </div>
+    </div>
+</div>
+
+<%-- manage answers to item --%>
+<script type="text/javascript">
+
+    new Vue({
+        el: '#vueApp',
+        data: {
+            answers: []
+        },
+        methods: {
+            loadAnswers: function (itemId) {
+                var self = this;
+                $.get('/item/as-'+itemId, function(data, status){
+                    self.answers = data;
+                });
+            }
+        }
+    });
+
+</script>
+
+
+<%-- edit title and difficulty --%>
 <script type="text/javascript">
 
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");

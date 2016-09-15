@@ -49,6 +49,9 @@ public class ItemServiceImpl implements ItemService {
         } else {
             itemDao.persist(item);
         }
+
+        itemDTO.setId(item.getId());
+
     }
 
     private String buildTitle(String assertion) {
@@ -63,5 +66,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ExamItem getByKey(Integer id) {
         return itemDao.getByKey(id);
+    }
+
+    public void remove(Integer itemId){
+        itemDao.delete(itemDao.getByKey(itemId));
     }
 }

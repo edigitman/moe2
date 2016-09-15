@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ro.agitman.moe.middle.dao.ItemDao;
 import ro.agitman.moe.middle.model.Exam;
 import ro.agitman.moe.middle.model.ExamItem;
 import ro.agitman.moe.middle.model.ItemTypeEnum;
@@ -15,8 +16,10 @@ import ro.agitman.moe.middle.service.ItemService;
 import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
 import ro.agitman.moe.web.dto.ExamEditDTO;
+import ro.agitman.moe.web.dto.ExamItemDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -56,9 +59,11 @@ public class ProfExamController extends AbstractController {
         Exam exam = examService.findById(examId, getCurrentUser(userService));
         model.addAttribute("exam", exam);
 
-        model.addAttribute("items", itemService.findByExam(exam));
+        ExamItemDTO examItemDTO = getNewOrEdit(request);
+        model.addAttribute("item", examItemDTO);
 
-        model.addAttribute("item", getNewOrEdit(request));
+        model.addAttribute("items", loadItems(exam, examItemDTO));
+
         model.addAttribute("itemTypes", ItemTypeEnum.values());
 
         return "/prof/editItem";
@@ -66,7 +71,7 @@ public class ProfExamController extends AbstractController {
 
     @RequestMapping(value = "editProperty", method = RequestMethod.POST)
     @ResponseBody
-    public String edixExamProperty(ExamEditDTO data, ModelMap model) {
+    public String editExamProperty(ExamEditDTO data, ModelMap model) {
 
         if ("examName".equals(data.getName())) {
             examService.changeName(data);
@@ -77,13 +82,27 @@ public class ProfExamController extends AbstractController {
         return data.getValue();
     }
 
-    private ExamItem getNewOrEdit(HttpServletRequest request) {
+    private List<ExamItemDTO> loadItems(Exam exam, ExamItemDTO itemDTO){
+
+        final Integer[] points = {0};
+
+        List<ExamItem> items = itemService.findByExam(exam);
+        List<ExamItemDTO> itemsDTO = new ArrayList<>(items.size());
+
+        items.forEach(ex -> { points[0] += ex.getPoints(); itemsDTO.add(new ExamItemDTO(ex, ex.getId().equals(itemDTO.getId()))); });
+
+        exam.setPoints(points[0]);
+
+        return itemsDTO;
+    }
+
+    private ExamItemDTO getNewOrEdit(HttpServletRequest request) {
         Object sessionItemId = request.getSession().getAttribute(ProfItemController.ITEM_ID);
 
         if (sessionItemId != null && sessionItemId instanceof Integer) {
-            return itemService.getByKey((Integer) sessionItemId);
+            return new ExamItemDTO(itemService.getByKey((Integer) sessionItemId));
         }
 
-        return new ExamItem();
+        return new ExamItemDTO();
     }
 }

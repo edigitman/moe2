@@ -1,5 +1,6 @@
 package ro.agitman.moe.web.dto;
 
+import ro.agitman.moe.middle.model.ExamItem;
 import ro.agitman.moe.middle.model.ItemTypeEnum;
 
 /**
@@ -8,10 +9,35 @@ import ro.agitman.moe.middle.model.ItemTypeEnum;
 public class ExamItemDTO {
 
     private String assertion;
+    private String title;
     private Integer points;
     private ItemTypeEnum type;
     private Integer examId;
     private Integer id;
+    private Boolean selected;
+
+    public ExamItemDTO() {
+    }
+
+    public ExamItemDTO(ExamItem examItem) {
+
+        this.assertion = examItem.getAssertion();
+        this.points = examItem.getPoints();
+        this.type = examItem.getType();
+        this.id = examItem.getId();
+        this.title = examItem.getTitle();
+    }
+
+    public ExamItemDTO(ExamItem examItem, Boolean selected) {
+
+        this.assertion = examItem.getAssertion();
+        this.points = examItem.getPoints();
+        this.type = examItem.getType();
+        this.id = examItem.getId();
+        this.title = examItem.getTitle();
+        this.selected = selected;
+    }
+
 
     public Integer getId() {
         return id;
@@ -51,5 +77,21 @@ public class ExamItemDTO {
 
     public void setType(ItemTypeEnum itemTypeEnum) {
         this.type = itemTypeEnum;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
