@@ -17,6 +17,5 @@ public interface ItemService {
 
     ExamItem getByKey(Integer id);
 
-
-
+    void remove(Integer itemId);
 }
