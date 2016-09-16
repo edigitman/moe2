@@ -182,7 +182,7 @@
 
                 <div class="row" style="width: 99%; margin-left: 1px;">
                     <div class="form-group">
-                        <label for="type">Raspuns</label>
+                        <label for="answerValue">Raspuns</label>
                         <div>
                             <input id="answerValue" type="text" class="form-control"
                                    v-bind:value="value"
