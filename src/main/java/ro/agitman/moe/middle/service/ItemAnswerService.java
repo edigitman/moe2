@@ -15,7 +15,7 @@ public interface ItemAnswerService {
 
     ExamItemAnswer getById(Integer id);
 
-    void persist(ItemAnswerDTO itemAnswer, ExamItem examItem);
+    void persist(ItemAnswerDTO itemAnswer, Integer itemId);
 
     void delete(Integer id);
 }

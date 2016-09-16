@@ -3,6 +3,7 @@ package ro.agitman.moe.middle.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class ExamItemAnswer {
     private Boolean correct;
     private String value;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ITEM_ID", nullable = false)
     private ExamItem item;
