@@ -44,9 +44,7 @@ public class ItemServiceImpl implements ItemService {
         item.setPoints(itemDTO.getPoints());
         item.setTitle(buildTitle(item.getAssertion()));
 
-        exam.setPoints(exam.getPoints() + item.getPoints());
-        exam.setItems(exam.getItems() + 1);
-        examDao.update(exam);
+        updateExam(exam, item, true);
         if (itemDTO.getId() != null) {
             itemDao.update(item);
         } else {
@@ -61,6 +59,19 @@ public class ItemServiceImpl implements ItemService {
         return assertion;
     }
 
+    private void updateExam(Exam exam, ExamItem item, Boolean add) {
+        Integer points = exam.getPoints() != null ? exam.getPoints() : 0;
+        Integer items = exam.getItems() != null ? exam.getItems() : 0;
+        if (add) {
+            exam.setPoints(points + item.getPoints());
+            exam.setItems(items + 1);
+        } else {
+            exam.setPoints(points - item.getPoints());
+            exam.setItems(items - 1);
+        }
+        examDao.update(exam);
+    }
+
     @Override
     public List<ExamItem> findByExam(Exam exam) {
         return itemDao.findByExam(exam);
@@ -71,13 +82,12 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.getByKey(id);
     }
 
+    @Override
     public void remove(Integer itemId) {
 
         ExamItem item = itemDao.getByKey(itemId);
         Exam exam = item.getExam();
-        exam.setPoints(exam.getPoints() - item.getPoints());
-        exam.setItems(exam.getItems() - 1);
-        examDao.update(exam);
+        updateExam(exam, item, false);
 
         itemDao.delete(item);
     }
