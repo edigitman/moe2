@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.agitman.moe.middle.dao.ItemAnswerDao;
+import ro.agitman.moe.middle.dao.ItemDao;
+import ro.agitman.moe.middle.model.Exam;
 import ro.agitman.moe.middle.model.ExamItem;
 import ro.agitman.moe.middle.model.ExamItemAnswer;
 import ro.agitman.moe.middle.service.ItemAnswerService;
@@ -21,6 +23,8 @@ public class ItemAnswerServiceImpl implements ItemAnswerService {
 
     @Autowired
     private ItemAnswerDao answerDao;
+    @Autowired
+    private ItemDao itemDao;
 
     @Override
     public List<ExamItemAnswer> getForItem(ExamItem examItem) {
@@ -33,10 +37,12 @@ public class ItemAnswerServiceImpl implements ItemAnswerService {
     }
 
     @Override
-    public void persist(ItemAnswerDTO itemAnswer, ExamItem examItem) {
+    public void persist(ItemAnswerDTO itemAnswer, Integer itemId) {
+
+        ExamItem item  = itemDao.getByKey(itemId);
 
         ExamItemAnswer answer = new ExamItemAnswer();
-        answer.setItem(examItem);
+        answer.setItem(item);
         answer.setValue(itemAnswer.getValue());
         answer.setCorrect(itemAnswer.getCorrect());
         answer.setDatecreated(new Date());

@@ -44,6 +44,9 @@ public class ItemServiceImpl implements ItemService {
         item.setPoints(itemDTO.getPoints());
         item.setTitle(buildTitle(item.getAssertion()));
 
+        exam.setPoints(exam.getPoints() + item.getPoints());
+        exam.setItems(exam.getItems() + 1);
+        examDao.update(exam);
         if (itemDTO.getId() != null) {
             itemDao.update(item);
         } else {
@@ -68,7 +71,14 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.getByKey(id);
     }
 
-    public void remove(Integer itemId){
-        itemDao.delete(itemDao.getByKey(itemId));
+    public void remove(Integer itemId) {
+
+        ExamItem item = itemDao.getByKey(itemId);
+        Exam exam = item.getExam();
+        exam.setPoints(exam.getPoints() - item.getPoints());
+        exam.setItems(exam.getItems() - 1);
+        examDao.update(exam);
+
+        itemDao.delete(item);
     }
 }

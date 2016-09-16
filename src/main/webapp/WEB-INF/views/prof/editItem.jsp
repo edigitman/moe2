@@ -185,11 +185,11 @@
                         <label for="answerValue">Raspuns</label>
                         <div>
                             <input id="answerValue" type="text" class="form-control"
-                                   v-bind:value="value"
+                                   v-model="value"
                                    style="display: inline-block; width: 85%"/>
                             <span>
                                 <input id="answerCorrect"
-                                       v-bind:value="correct"
+                                       v-model="correct"
                                        type="checkbox"> Corect
                             </span>
                         </div>
@@ -201,19 +201,23 @@
                 <div class="row">
                     <table id="answerTable" class="table table-hover">
                         <caption>lista de raspunsuri</caption>
+                        <tr>
+                            <th>Valoare</th>
+                            <th>Corect</th>
+                            <th></th>
+                        </tr>
                         <tr v-for="answer in answers">
                             <td>{{ answer.value }}</td>
                             <td>{{ answer.correct }}</td>
-                            <td>delete</td>
+                            <td> <a class="btn btn-link" @click="deleteAnswer(answer.id)" href="#">X</a></td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link" data-dismiss="modal">Inchide</button>
-                <button type="submit" class="btn btn-primary">Salveaza</button>
+                <%--<button type="submit" class="btn btn-primary">Salveaza</button>--%>
             </div>
-            <script src="/js/smooth-scroll.min.js"></script>
 
         </div>
     </div>
@@ -225,8 +229,8 @@
     new Vue({
         el: '#vueApp',
         data: {
-            value: {},
-            correct: {},
+            value: '',
+            correct: false,
 
             itemId: {},
 
@@ -237,27 +241,55 @@
                 var self = this;
                 self.itemId = itemId;
                 $.get('/item/as-' + itemId, function (data, status) {
-                    self.answers = data;
+                    self.answers = $.parseJSON( data );
                 });
             },
 
             saveAnswer: function () {
                 var self = this;
-                $.post('/item/as-' + self.itemId, {value: self.value, correct: self.correct},
-                        function (data, status) {
-                            console.log('save answer: ' + status);
-                            answers.push(data);
-                            self.value = {};
-                            self.correct = {};
-                        });
+
+                var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                var csrfToken = $("meta[name='_csrf']").attr("content");
+
+                var headers = {};
+                headers[csrfHeader] = csrfToken;
+
+                $.ajax({
+                    method: 'POST',
+                    url: '/item/as-' + self.itemId,
+                    headers: headers,
+                    data: {value: self.value, correct: self.correct},
+                    success: function (data, status) {
+                        console.log('save answer: ' + status);
+                        self.answers.push($.parseJSON( data ));
+                        self.value = '';
+                        self.correct = false;
+                    }
+                }).done(function() {
+                    console.log('done');
+                });
             },
 
             deleteAnswer: function (answer) {
+                var self = this;
+
+                var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                var csrfToken = $("meta[name='_csrf']").attr("content");
+
+                var headers = {};
+                headers[csrfHeader] = csrfToken;
+
                 $.ajax({
-                    url: '/item/as-' + answer.id,
                     type: 'DELETE',
-                    success: function (result) {
-                        console.log(result);
+                    url: '/item/as-' + answer,
+                    headers: headers,
+                    success: function (result, status) {
+
+                        self.answers = $.grep(self.answers, function(value, index){
+                            return value.id != answer;
+                        });
+
+                        console.log(status);
                     }
                 });
             }

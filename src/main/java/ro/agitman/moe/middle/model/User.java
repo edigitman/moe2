@@ -4,6 +4,7 @@ package ro.agitman.moe.middle.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,19 +27,19 @@ public class User implements Serializable {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "LAST_NAME", nullable = false)
     private String lastName;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @NotEmpty
+    @NotNull
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "APP_USER_USER_PROFILE",
             joinColumns = {@JoinColumn(name = "USER_ID")},

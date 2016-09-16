@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/item")
 public class ProfItemController extends AbstractController {
 
-    public static final String ITEM_ID = "examItemId";
+    static final String ITEM_ID = "examItemId";
 
     @Autowired
     private ItemService itemService;
@@ -90,15 +90,18 @@ public class ProfItemController extends AbstractController {
     @ResponseBody
     public String saveAnswer(@PathVariable("id") Integer itemId, ItemAnswerDTO answerDTO) {
 
-        answerService.persist(answerDTO, itemService.getByKey(itemId));
+        answerService.persist(answerDTO, itemId);
 
         return new Gson().toJson(answerDTO);
     }
 
     @RequestMapping(value = "as-{id}", method = RequestMethod.DELETE)
-    public void removeAnswer(@PathVariable("id") Integer answerId) {
+    @ResponseBody
+    public String removeAnswer(@PathVariable("id") Integer answerId) {
 
         answerService.delete(answerId);
+
+        return "200";
     }
 
 }

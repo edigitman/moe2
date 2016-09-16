@@ -3,7 +3,9 @@ package ro.agitman.moe.middle.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "EXAM_ITEM")
@@ -14,9 +16,9 @@ public class ExamItem {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EXAM_ITEM_SEQ")
     private Integer id;
 
-    @NotEmpty
+    @NotNull
     private String assertion;
-    @NotEmpty
+    @NotNull
     private String title;
 
     @Enumerated(EnumType.STRING)
@@ -29,6 +31,10 @@ public class ExamItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EXAM_ID", nullable = false)
     private Exam exam;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
+    private List<ExamItemAnswer> answerList;
+
 
     private Integer ord;
     private Date datecreated;
@@ -160,5 +166,13 @@ public class ExamItem {
 
     public void setOrd(Integer ord) {
         this.ord = ord;
+    }
+
+    public List<ExamItemAnswer> getAnswerList() {
+        return answerList;
+    }
+
+    public void setAnswerList(List<ExamItemAnswer> answerList) {
+        this.answerList = answerList;
     }
 }

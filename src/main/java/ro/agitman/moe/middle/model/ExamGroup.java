@@ -4,6 +4,7 @@ package ro.agitman.moe.middle.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -18,14 +19,14 @@ public class ExamGroup {
     private String name;
 
 
-    @NotEmpty
+    @NotNull
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "EXAM_GROUP_APP_USER",
             joinColumns = {@JoinColumn(name = "EXAM_ID")},
             inverseJoinColumns = {@JoinColumn(name = "USER_ID")})
     private List<User> students;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User owner;

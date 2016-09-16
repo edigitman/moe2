@@ -3,6 +3,7 @@ package ro.agitman.moe.middle.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class ExamInstance {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EXAM_INSTANCE_SEQ")
     private Integer id;
 
-    @NotEmpty
+    @NotNull
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -24,17 +25,17 @@ public class ExamInstance {
     private Date startdate;
     private Date enddate;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EXAM_ID", nullable = false)
     private Exam exam;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID", nullable = false)
     private ExamGroup group;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User owner;
