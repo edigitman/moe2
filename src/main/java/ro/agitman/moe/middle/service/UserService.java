@@ -1,8 +1,8 @@
 package ro.agitman.moe.middle.service;
 
-import java.util.List;
-
 import ro.agitman.moe.middle.model.User;
+
+import java.util.List;
 
 
 public interface UserService {
@@ -22,4 +22,6 @@ public interface UserService {
     boolean isUserSSOUnique(Integer id, String sso);
 
     List<User> findAllUsersWithRoles();
+
+    List<User> find();
 }
