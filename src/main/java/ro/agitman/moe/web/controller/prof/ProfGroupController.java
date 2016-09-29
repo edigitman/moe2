@@ -13,6 +13,7 @@ import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
 import ro.agitman.moe.web.dto.ExamGroupDTO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -43,6 +44,17 @@ public class ProfGroupController extends AbstractController {
 
         return "redirect:/group";
     }
+
+
+    @RequestMapping(value = "remove-{id}", method = RequestMethod.GET)
+    public String removeGroup(@PathVariable("id") Integer itemId) {
+
+        groupService.remove(itemId);
+
+
+        return "redirect:/group";
+    }
+
 
     @RequestMapping(value = "studs-{id}", method = RequestMethod.POST)
     @ResponseBody

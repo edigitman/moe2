@@ -2,6 +2,7 @@ package ro.agitman.moe.middle.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.agitman.moe.middle.dao.ExamGroupDao;
 import ro.agitman.moe.middle.model.ExamGroup;
 import ro.agitman.moe.middle.model.User;
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by d-uu31cq on 19.09.2016.
  */
 @Service("examGroupService")
+@Transactional
 public class ExamGroupServiceImpl implements ExamGroupService {
 
     @Autowired
@@ -47,5 +49,10 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         ExamGroup group = groupDao.getByKey(groupId);
 
 
+    }
+
+
+    public void remove(Integer groupId){
+        groupDao.delete(groupDao.getByKey(groupId));
     }
 }

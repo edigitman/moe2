@@ -80,14 +80,14 @@
                         </div>
                     </div><!-- END OF ROW -->
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="form-group" id="pointsDiv">
                                 <label for="points">Puncte</label>
                                 <input type="number" class="form-control" value="${item.points}" name="points"
                                        id="points" required/>
                             </div>
                         </div>  <!-- END OF COLUMN -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="type">Tip item</label>
                                 <form:select path="type" class="form-control" items="${itemTypes}"/>
@@ -107,15 +107,17 @@
                         <div class="row">
                             <a href="/item/clean-${exam.id}" class="btn btn-link">Curata</a>
                         </div>
-                        <div class="row" style="margin-top: 25px">
-                            <button type="button"
-                                    @click="loadAnswers(${item.id})"
-                                    class="btn btn-primary"
-                                    data-toggle="modal"
-                                    data-target="#answerModal">
-                                Raspunsuri
-                            </button>
-                        </div>
+                        <c:if test="${item.type != 'TEXT'}">
+                            <div class="row" style="margin-top: 25px">
+                                <button type="button"
+                                        @click="loadAnswers(${item.id})"
+                                        class="btn btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#answerModal">
+                                    Raspunsuri
+                                </button>
+                            </div>
+                        </c:if>
                     </c:if>
                 </div>
 
@@ -209,7 +211,7 @@
                         <tr v-for="answer in answers">
                             <td>{{ answer.value }}</td>
                             <td>{{ answer.correct }}</td>
-                            <td> <a class="btn btn-link" @click="deleteAnswer(answer.id)" href="#">X</a></td>
+                            <td><a class="btn btn-link" @click="deleteAnswer(answer.id)" href="#">X</a></td>
                         </tr>
                     </table>
                 </div>
@@ -241,7 +243,7 @@
                 var self = this;
                 self.itemId = itemId;
                 $.get('/item/as-' + itemId, function (data, status) {
-                    self.answers = $.parseJSON( data );
+                    self.answers = $.parseJSON(data);
                 });
             },
 
@@ -261,11 +263,11 @@
                     data: {value: self.value, correct: self.correct},
                     success: function (data, status) {
                         console.log('save answer: ' + status);
-                        self.answers.push($.parseJSON( data ));
+                        self.answers.push($.parseJSON(data));
                         self.value = '';
                         self.correct = false;
                     }
-                }).done(function() {
+                }).done(function () {
                     console.log('done');
                 });
             },
@@ -285,7 +287,7 @@
                     headers: headers,
                     success: function (result, status) {
 
-                        self.answers = $.grep(self.answers, function(value, index){
+                        self.answers = $.grep(self.answers, function (value, index) {
                             return value.id != answer;
                         });
 

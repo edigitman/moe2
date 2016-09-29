@@ -16,4 +16,6 @@ public interface ExamGroupService {
     ExamGroup createGroup(User user, ExamGroupDTO groupDTO);
 
     void addStudents(Integer groupId, List<Integer> studs);
+
+    void remove(Integer groupId);
 }

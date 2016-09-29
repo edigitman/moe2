@@ -23,5 +23,4 @@ public interface UserService {
 
     List<User> findAllUsersWithRoles();
 
-    List<User> find();
 }

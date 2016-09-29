@@ -18,13 +18,13 @@ public class ExamGroup {
     private Integer id;
     private String name;
 
-
-    @NotNull
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "EXAM_GROUP_APP_USER",
             joinColumns = {@JoinColumn(name = "EXAM_ID")},
             inverseJoinColumns = {@JoinColumn(name = "USER_ID")})
     private List<User> students;
+
+    private int studentsNr;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -119,5 +119,13 @@ public class ExamGroup {
 
     public void setLocked(Boolean locked) {
         this.locked = locked;
+    }
+
+    public int getStudentsNr() {
+        return studentsNr;
+    }
+
+    public void setStudentsNr(int studentsNr) {
+        this.studentsNr = studentsNr;
     }
 }
