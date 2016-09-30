@@ -13,9 +13,6 @@ import ro.agitman.moe.middle.service.UserService;
 import ro.agitman.moe.web.controller.AbstractController;
 import ro.agitman.moe.web.dto.ExamGroupDTO;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
 @Controller
 @RequestMapping("/group")
 public class ProfGroupController extends AbstractController {
@@ -56,15 +53,16 @@ public class ProfGroupController extends AbstractController {
     }
 
 
-    @RequestMapping(value = "studs-{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "stud", method = RequestMethod.POST)
     @ResponseBody
-    public String addGroups(@PathVariable("id") Integer groupId, List<Integer> studs) {
+    public String addGroups(User student) {
 
         User user = getCurrentUser(userService);
 
-        groupService.addStudents(groupId, studs);
+        groupService.addStudent(student, user);
 
         return "200";
     }
+
 
 }

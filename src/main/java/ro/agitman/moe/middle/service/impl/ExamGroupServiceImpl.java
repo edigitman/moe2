@@ -43,16 +43,15 @@ public class ExamGroupServiceImpl implements ExamGroupService {
         return examGroup;
     }
 
+
     @Override
-    public void addStudents(Integer groupId, List<Integer> studs) {
-
-        ExamGroup group = groupDao.getByKey(groupId);
-
-
+    public void remove(Integer groupId) {
+        groupDao.delete(groupDao.getByKey(groupId));
     }
 
+    @Override
+    public void addStudent(User student, User user) {
 
-    public void remove(Integer groupId){
-        groupDao.delete(groupDao.getByKey(groupId));
+
     }
 }
